@@ -3,3 +3,4 @@
 *.prof
 *.png
 venv
+.DS_Store

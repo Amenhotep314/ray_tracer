@@ -46,7 +46,7 @@ def render(scene, max_depth=5, trials=1, ortho=False, background_color=np.array(
     image.save("out.png")
 
 sample_scene = Scene(
-    Camera(height=720, width=1080, depth=720/(2*np.tan(np.pi/4 - np.pi/16))),
+    Camera(height=1080, width=1920, depth=1080/(2*np.tan(np.pi/4 - np.pi/16))),
     Light(np.array([0, 2, 3]), np.array([3, 3, 3]), 1),
     Sphere(np.array([0, 2, 0]), np.array([1, 0, 0]), 1, 1, 1.5, 0.7),
     Sphere(np.array([-0.7, 1.5, -0.3]), np.array([0, 0, 1]), 0.5, 1, 1.5, 0.3),
@@ -54,4 +54,4 @@ sample_scene = Scene(
     Sphere(np.array([0, 2, -15]), np.array([0.25, 0.25, 0.25]), 1, 1, 1.5, 14.3)
 )
 
-render(sample_scene, max_depth=10, trials=100, background_color=np.array([0.7, 0.8, 1]))
+render(sample_scene, max_depth=10, trials=5, background_color=np.array([0.7, 0.8, 1]))
