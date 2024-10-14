@@ -105,6 +105,6 @@ public class Vector3 {
     }
 
     public String toString() {
-        return "[" + String.valueOf(x) + String.valueOf(y) + String.valueOf(z) + "]";
+        return "[" + String.valueOf(x) + ", " + String.valueOf(y) + ", " + String.valueOf(z) + "]";
     }
 }
