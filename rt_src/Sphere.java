@@ -16,8 +16,13 @@ public class Sphere extends VisibleObject {
         if (D < 0) {
             return new RayHit(this);
         }
-        double t = -ray.direction().dot(ray.origin().minus(position)) - Math.sqrt(D);
+        double offset = -ray.direction().dot(ray.origin().minus(position));
+        double t = offset - Math.sqrt(D);
         if (t < 0) {
+            t = t - (2 * offset);
+            if (t < 0) {
+                return new RayHit(this);
+            }
             return new RayHit(this);
         }
         Vector3 intersect = ray.origin().plus(ray.direction().scalarMultiply(t));

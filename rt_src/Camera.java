@@ -30,6 +30,11 @@ public class Camera extends SceneObject {
     public int height() { return height; }
     public int width() { return width; }
 
+    public void moveTo(double x, double y, double z) {
+
+        this.position = new Vector3(x, y, z);
+    }
+
     public Ray pixelPerspectiveRay(int x, int y) {
 
         double x_space = x - (width / 2.0) + 2 * (Math.random() - 0.5);

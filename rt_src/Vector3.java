@@ -6,6 +6,14 @@ import java.util.Random;
 
 public class Vector3 {
 
+    public static Vector3 ORIGIN = new Vector3(0, 0, 0);
+    public static Vector3 UP = new Vector3(0, 0, 1);
+    public static Vector3 DOWN = new Vector3(0, 0, -1);
+    public static Vector3 LEFT = new Vector3(-1, 0, 0);
+    public static Vector3 RIGHT = new Vector3(1, 0, 0);
+    public static Vector3 IN = new Vector3(0, 1, 0);
+    public static Vector3 OUT = new Vector3(0, -1, 0);
+
     private double x;
     private double y;
     private double z;
@@ -17,40 +25,9 @@ public class Vector3 {
         this.z = z;
     }
 
-    public static Vector3 randomDirection() {
-        double randomX = r.nextGaussian();
-        double randomY = r.nextGaussian();
-        double randomZ = r.nextGaussian();
-
-        Vector3 ans = new Vector3(randomX, randomY, randomZ);
-        return ans.normalize();
-    }
-
-    public static Vector3 average(Vector3[] values) {
-
-        double xsum = 0;
-        double ysum = 0;
-        double zsum = 0;
-
-        for (Vector3 value : values) {
-            xsum += value.x();
-            ysum += value.y();
-            zsum += value.z();
-        }
-        return new Vector3(xsum, ysum, zsum).scalarMultiply(1.0/values.length);
-    }
-
     public double x() { return this.x; }
     public double y() { return this.y; }
     public double z() { return this.z; }
-
-    public Vector3 scalarMultiply(double scalar) {
-       return new Vector3(
-            this.x() * scalar,
-            this.y() * scalar,
-            this.z() * scalar
-       );
-    }
 
     public Vector3 plus(Vector3 other) {
         return new Vector3(
@@ -68,7 +45,15 @@ public class Vector3 {
         );
     }
 
-    public Vector3 elementProduct(Vector3 other) {
+    public Vector3 scalarMultiply(double scalar) {
+        return new Vector3(
+             this.x() * scalar,
+             this.y() * scalar,
+             this.z() * scalar
+        );
+     }
+
+     public Vector3 elementProduct(Vector3 other) {
         return new Vector3(
             this.x() * other.x(),
             this.y() * other.y(),
@@ -102,6 +87,29 @@ public class Vector3 {
 
     public Vector3 normalize() {
         return this.scalarMultiply(1.0 / this.magnitude());
+    }
+
+    public static Vector3 randomDirection() {
+        double randomX = r.nextGaussian();
+        double randomY = r.nextGaussian();
+        double randomZ = r.nextGaussian();
+
+        Vector3 ans = new Vector3(randomX, randomY, randomZ);
+        return ans.normalize();
+    }
+
+    public static Vector3 average(Vector3[] values) {
+
+        double xsum = 0;
+        double ysum = 0;
+        double zsum = 0;
+
+        for (Vector3 value : values) {
+            xsum += value.x();
+            ysum += value.y();
+            zsum += value.z();
+        }
+        return new Vector3(xsum, ysum, zsum).scalarMultiply(1.0/values.length);
     }
 
     public String toString() {

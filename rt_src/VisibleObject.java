@@ -41,9 +41,9 @@ public abstract class VisibleObject extends SceneObject {
     public Ray bounceRay(Ray ray, Vector3 point) {
 
         Vector3 normal = this.normal(point);
-        double opaqueProbability = Math.random();
 
-        // The ray passes through the object
+        // The ray passes into the object
+        double opaqueProbability = Math.random();
         if (opaqueProbability > opacity) {
             double incomingAngle = Math.acos(ray.direction().dot(normal));
             double outgoingAngle = Math.asin(Math.sin(incomingAngle) / refractiveIndex);
@@ -53,9 +53,8 @@ public abstract class VisibleObject extends SceneObject {
             return new Ray(point, newDirection);
         }
 
+        // The ray is reflected
         double specularProbability = Math.random();
-
-        // The ray is scattered
         if (specularProbability > roughness) {
             Vector3 newDirection = ray.direction().minus(normal.scalarMultiply(2*ray.direction().dot(normal)));
             return new Ray(point, newDirection);

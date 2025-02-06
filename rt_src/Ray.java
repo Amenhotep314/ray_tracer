@@ -15,6 +15,6 @@ public class Ray {
     public Vector3 direction() { return this.direction; }
 
     public String toString() {
-        return origin.toString() + "+ t * " + direction.toString();
+        return origin.toString() + " + t * " + direction.toString();
     }
 }

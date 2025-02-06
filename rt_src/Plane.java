@@ -3,6 +3,8 @@ package rt_src;
 public class Plane extends VisibleObject {
 
     private Vector3 normalVector;
+    private double width;
+    private double height;
 
     public Plane(Vector3 position, Vector3 color, double roughness, double opacity, double refractiveIndex, boolean isLight, Vector3 normalVector) {
 
