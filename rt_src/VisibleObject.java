@@ -1,6 +1,7 @@
 package rt_src;
 
 import java.lang.Math;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public abstract class VisibleObject extends SceneObject {
@@ -43,7 +44,7 @@ public abstract class VisibleObject extends SceneObject {
         Vector3 normal = this.normal(point);
 
         // The ray passes into the object
-        double opaqueProbability = Math.random();
+        double opaqueProbability = ThreadLocalRandom.current().nextDouble();
         if (opaqueProbability > opacity) {
             double incomingAngle = Math.acos(ray.direction().dot(normal));
             double outgoingAngle = Math.asin(Math.sin(incomingAngle) / refractiveIndex);
@@ -54,7 +55,7 @@ public abstract class VisibleObject extends SceneObject {
         }
 
         // The ray is reflected
-        double specularProbability = Math.random();
+        double specularProbability = ThreadLocalRandom.current().nextDouble();
         if (specularProbability > roughness) {
             Vector3 newDirection = ray.direction().minus(normal.scalarMultiply(2*ray.direction().dot(normal)));
             return new Ray(point, newDirection);

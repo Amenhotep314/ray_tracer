@@ -4,27 +4,84 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.IntStream;
+import java.util.concurrent.ForkJoinPool;
 
 public class Main {
 
     public static void main(String[] args) {
         Scene sampleScene = new Scene(
-            new Camera(new Vector3(0, 0, 0), 1920, 1080, 68, new Vector3(0, 1, 0), new Vector3(0, 0, 1)),
+            new Camera(new Vector3(0, -2, 0), 1920, 1080, 2, 2, new Vector3(0, 1, 0), new Vector3(0, 0, 1)),
             new VisibleObject[] {
-                new Sphere(new Vector3(0, 2, 3), new Vector3(3, 3, 3), 1, 1, 1, true, 1),
-                new Sphere(new Vector3(0, 2, 0), new Vector3(1, 0, 0), 1, 1, 1.5, false, 0.7),
-                new Sphere(new Vector3(-0.7, 1.5, -0.3), new Vector3(0, 0.6, 1), 0, 1, 1.5, false, 0.3),
-                new Sphere(new Vector3(0.9, 2.5, 0.3), new Vector3(0, 1, 0), 1, 1, 1.5, false, 0.4),
-                new Sphere(new Vector3(0.5, 1.2, 0), new Vector3(0.8, 0.8, 0.8), 1, 0, 1.5, false, 0.2),
-                new Sphere(new Vector3(0, 2, -15), new Vector3(0.25, 0.25, 0.25), 1, 1, 1.5, false, 14.3),
-                // new Plane(new Vector3(0, 0, -2), new Vector3(0.25, 0.25, 0.25), 1, 1, 1.5, false, new Vector3(0, 0, 1))
+                new Sphere(new Vector3(1, 0, 1.5), new Vector3(8, 8, 8), 1, 1, 1, true, 0.5),
+                new Sphere(new Vector3(0, 0, 0), new Vector3(1, 0, 0), 1, 1, 1.5, false, 0.35),
+                new Sphere(new Vector3(-0.35, -0.25, -0.15), new Vector3(0, 0.6, 1), 0, 1, 1.5, false, 0.15),
+                new Sphere(new Vector3(0.45, 0.25, 0.15), new Vector3(0, 1, 0), 1, 1, 1.5, false, 0.2),
+                new Sphere(new Vector3(0.25, -0.4, 0), new Vector3(0.8, 0.8, 0.8), 1, 0, 1.5, false, 0.1),
+                new Sphere(new Vector3(0, 0, -7.5), new Vector3(0.15, 0.15, 0.15), 1, 1, 1.5, false, 7.15),
             }
         );
 
-        render(sampleScene, 10, 100, false, new Vector3(0.7, 0.8, 1));
+        // render(sampleScene, 50, 10, false, new Vector3(0.5, 0.6, 0.7), "test.png");
+
+
+        // PARALLEL RENDERING EXAMPLE
+        // ForkJoinPool customPool = new ForkJoinPool(7);
+
+        // try {
+        //     customPool.submit(() -> IntStream.range(0, 120).parallel().forEach(i -> {
+
+        //         // double angle = (Math.PI * i / 180.0) - (Math.PI / 2);
+        //         // Vector3 cameraPosition = new Vector3(4 * Math.cos(angle), 4 * Math.sin(angle), 0);
+        //         // Vector3 cameraDirection = cameraPosition.scalarMultiply(-1).normalize();
+
+        //         Vector3 cameraPosition = new Vector3(0, -2, 0);
+        //         Vector3 cameraDirection = new Vector3(0, 1, 0);
+        //         double blur = (1/12) * i;
+
+        //         Scene frameScene = new Scene(
+        //             new Camera(cameraPosition, 1920, 1080, 2, blur, cameraDirection, new Vector3(0, 0, 1)),
+        //             new VisibleObject[] {
+        //                 new Sphere(new Vector3(1, 0, 1.5), new Vector3(8, 8, 8), 1, 1, 1, true, 0.5),
+        //                 new Sphere(new Vector3(0, 0, 0), new Vector3(1, 0, 0), 1, 1, 1.5, false, 0.35),
+        //                 new Sphere(new Vector3(-0.35, -0.25, -0.15), new Vector3(0, 0.6, 1), 0, 1, 1.5, false, 0.15),
+        //                 new Sphere(new Vector3(0.45, 0.25, 0.15), new Vector3(0, 1, 0), 1, 1, 1.5, false, 0.2),
+        //                 new Sphere(new Vector3(0.25, -0.4, 0), new Vector3(0.8, 0.8, 0.8), 1, 0, 1.5, false, 0.1),
+        //                 new Sphere(new Vector3(0, 0, -7.5), new Vector3(0.15, 0.15, 0.15), 1, 1, 1.5, false, 7.15),
+        //             }
+        //         );
+        //         String filename = String.format("frame_%03d.png", i);
+        //         render(frameScene, 10, 10, false, new Vector3(0.7, 0.8, 1), filename);
+        //     })).get();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+
+        // SYNCHRONOUS RENDERING EXAMPLE
+        for (int i = 0; i < 360; i++) {
+
+            double angle = (2 * Math.PI * i / 360.0) - (Math.PI / 2);
+
+            Vector3 cameraPosition = new Vector3(2 * Math.cos(angle), 2 * Math.sin(angle), 0);
+            Vector3 cameraDirection = cameraPosition.scalarMultiply(-1).normalize();
+
+            Scene frameScene = new Scene(
+                new Camera(cameraPosition, 1920, 1080, 2, 2, cameraDirection, new Vector3(0, 0, 1)),
+                new VisibleObject[] {
+                    new Sphere(new Vector3(1, 0, 1.5), new Vector3(3, 3, 3), 1, 1, 1, true, 0.5),
+                    new Sphere(new Vector3(0, 0, 0), new Vector3(1, 0, 0), 1, 1, 1.5, false, 0.35),
+                    new Sphere(new Vector3(-0.35, -0.25, -0.15), new Vector3(0, 0.6, 1), 0, 1, 1.5, false, 0.15),
+                    new Sphere(new Vector3(0.45, 0.25, 0.15), new Vector3(0, 1, 0), 1, 1, 1.5, false, 0.2),
+                    new Sphere(new Vector3(0.25, -0.4, 0), new Vector3(0.8, 0.8, 0.8), 1, 0, 1.5, false, 0.1),
+                    new Sphere(new Vector3(0, 0, -7.5), new Vector3(0.15, 0.15, 0.15), 1, 1, 1.5, false, 7.15),
+                }
+            );
+            String filename = String.format("frame_%03d.png", i);
+            render(frameScene, 50, 100, false, new Vector3(0.7, 0.8, 1), filename);
+        }
     }
 
-    public static void render(Scene scene, int maxDepth, int trials, boolean ortho, Vector3 backgroundColor) {
+    public static void render(Scene scene, int maxDepth, int trials, boolean ortho, Vector3 backgroundColor, String filename) {
 
         int width = scene.camera().width();
         int height = scene.camera().height();

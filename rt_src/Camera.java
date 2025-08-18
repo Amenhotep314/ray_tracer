@@ -1,25 +1,32 @@
 package rt_src;
 
 import java.lang.Math;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Camera extends SceneObject {
 
     private int width;
     private int height;
+    private double worldWidth;
+    private double worldHeight = 1.0;
     private double depth;
+    private double focalRadius;
     private Vector3 direction;
     private Vector3 vertical;
     private Vector3 horizontal;
     private Vector3 center;
 
-    public Camera(Vector3 position, int width, int height, double fov, Vector3 direction, Vector3 vertical) {
+    public Camera(Vector3 position, int width, int height, double depth, double defocusAngle, Vector3 direction, Vector3 vertical) {
 
         super(position);
 
         this.width = width;
         this.height = height;
-        this.depth = height / (2 * Math.tan(Math.toRadians(0.5 * fov)));
+        this.worldWidth = (double) width / height;
+        this.depth = depth;
+
+        this.focalRadius = depth * Math.tan(Math.toRadians(defocusAngle / 2));
 
         this.direction = direction.normalize();
         this.vertical = vertical.normalize();
@@ -37,18 +44,41 @@ public class Camera extends SceneObject {
 
     public Ray pixelPerspectiveRay(int x, int y) {
 
-        double x_space = x - (width / 2.0) + 2 * (Math.random() - 0.5);
-        double y_space = (height / 2.0) - y + 2 * (Math.random() - 0.5);
-        Vector3 pixel = center.plus(horizontal.scalarMultiply(x_space).plus(vertical.scalarMultiply(y_space)));
-        Vector3 netDirection = pixel.minus(position);
-        return new Ray(position, netDirection);
+        double jitterX = 2 * (ThreadLocalRandom.current().nextDouble() - 0.5);
+        double jitterY = 2 * (ThreadLocalRandom.current().nextDouble() - 0.5);
+
+        double worldX = ((x + jitterX) / (double) width - 0.5) * worldWidth;
+        double worldY = (0.5 - (y + jitterY) / (double) height) * worldHeight;
+
+        Vector3 lens = randomDiscPosition();
+
+        Vector3 pixel = center.plus(horizontal.scalarMultiply(worldX)).plus(vertical.scalarMultiply(worldY));
+        Vector3 netDirection = pixel.minus(lens);
+        return new Ray(lens, netDirection);
     }
 
     public Ray pixelOrthoRay(int x, int y) {
 
-        double x_space = x - (this.width / 2.0) + 2 * (Math.random() - 0.5);
-        double y_space = (this.height / 2.0) - y + 2 * (Math.random() - 0.5);
-        Vector3 pixel = center.plus(horizontal.scalarMultiply(x_space).plus(vertical.scalarMultiply(y_space)));
+        double jitterX = 2 * (ThreadLocalRandom.current().nextDouble() - 0.5);
+        double jitterY = 2 * (ThreadLocalRandom.current().nextDouble() - 0.5);
+
+        double worldX = ((x + jitterX) / (double) width - 0.5) * worldWidth;
+        double worldY = (0.5 - (y + jitterY) / (double) height) * worldHeight;
+
+        Vector3 pixel = center.plus(horizontal.scalarMultiply(worldX)).plus(vertical.scalarMultiply(worldY));
         return new Ray(pixel, direction);
+    }
+
+    private Vector3 randomDiscPosition() {
+
+        while (true) {
+            double x = ThreadLocalRandom.current().nextDouble() - 0.5;
+            double y = ThreadLocalRandom.current().nextDouble() - 0.5;
+            if (x * x + y * y <= 1) {
+                x = x * focalRadius;
+                y = y * focalRadius;
+                return position.plus(horizontal.scalarMultiply(x)).plus(vertical.scalarMultiply(y));
+            }
+        }
     }
 }

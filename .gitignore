@@ -2,7 +2,9 @@
 *.pyc
 *.prof
 *.png
+*.mp4
 venv
 .DS_Store
 .idea
 *.iml
+settings.json

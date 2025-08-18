@@ -12,10 +12,10 @@ public class Scene {
         this.camera = camera;
         this.elements = elements;
 
-        this.camera.changeToPixelCoordinates(worldUnit);
-        for (int i = 0; i < elements.length; i++) {
-            this.elements[i].changeToPixelCoordinates(worldUnit);
-        }
+        // this.camera.changeToPixelCoordinates(worldUnit);
+        // for (int i = 0; i < elements.length; i++) {
+        //     this.elements[i].changeToPixelCoordinates(worldUnit);
+        // }
     }
 
     public Camera camera() { return camera; }
